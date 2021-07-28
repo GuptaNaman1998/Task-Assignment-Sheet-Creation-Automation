@@ -26,7 +26,7 @@ def ExtractData():
             Shift Letter specifying the shift of that engineer
             PH & PL
     '''
-    wb = load_workbook('August-21.xlsx', data_only = True)
+    wb = load_workbook('July-21.xlsx', data_only = True)
     ws = wb.active
     sh = wb[ws.title]
     temp=[]
