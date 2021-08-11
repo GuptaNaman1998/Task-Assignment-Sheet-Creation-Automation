@@ -3,8 +3,116 @@ from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Border,Font, Alignment,Side
 from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
 from openpyxl.utils import get_column_letter
+import warnings
+import datetime
+import time
 
-def ExtractData():
+def AddSheet(ws,week,POC):
+    # Filling the Header with the values
+    ws.append(['Shift','Engineer Name','Case','Type','Case','Type','Case','Type','Case','Type'])
+    x=week.keys()
+
+    for i in x:
+        # Filling the cells with the values from the Dictionary and checking for POCs
+        if i in POC:
+            ws.append(["POC : "+week[i],i])
+        else:
+            ws.append([week[i],i])
+
+    # Format the cell colour to be as desired
+    OrangeFill = PatternFill(start_color='FFC000',end_color='FFC000',fill_type='solid')
+    BlueFill = PatternFill(start_color='00B0F0',end_color='00B0F0',fill_type='solid')
+    BlackFill = PatternFill(start_color='000000',end_color='000000',fill_type='solid')
+    GreenFill = PatternFill(start_color='33CC33',end_color='33CC33',fill_type='solid')
+
+    # Format the cell border
+    ThinBorder = Border(left=Side(style='thick'),right=Side(style='thick'),top=Side(style='thick'),bottom=Side(style='thick'))
+
+    # Format the Font size type and appearance
+    BlackFont= Font(name='Cambria',size=11,bold=True,italic=True)
+    WhiteFont = Font(name='Cambria',size=11,bold=True,italic=True,color='FFFFFF')
+
+    # Format the text alignment in the cells
+    Al= Alignment(horizontal='center',vertical='center')
+
+    # Applying the Styles & formats to the cells
+    for col in range(1, ws.max_column + 1):
+        cell_header = ws.cell(1, col)
+        # print(cell_header.value)
+        cell_header.fill = GreenFill
+        cell_header.border = ThinBorder
+        cell_header.font = BlackFont
+        cell_header.alignment = Al
+    for cell in ws['A2:A{}'.format(ws.max_row)]:
+        cell[0].fill = OrangeFill
+        cell[0].border = ThinBorder
+        cell[0].font = BlackFont
+        cell[0].alignment = Al
+    for cell in ws['B2:B{}'.format(ws.max_row)]:
+        cell[0].fill = OrangeFill
+        cell[0].border = ThinBorder
+        cell[0].font = BlackFont
+        cell[0].alignment = Al
+    for cell in ws['D2:D{}'.format(ws.max_row)]: 
+        cell[0].fill = BlueFill
+        cell[0].border = ThinBorder
+        cell[0].font = BlackFont
+        cell[0].alignment = Al
+    for cell in ws['F2:F{}'.format(ws.max_row)]: 
+        cell[0].fill = BlueFill
+        cell[0].border = ThinBorder
+        cell[0].font = BlackFont
+        cell[0].alignment = Al
+    for cell in ws['H2:H{}'.format(ws.max_row)]: 
+        cell[0].fill = BlueFill
+        cell[0].border = ThinBorder
+        cell[0].font = BlackFont
+        cell[0].alignment = Al
+    for cell in ws['J2:J{}'.format(ws.max_row)]:
+        cell[0].fill = BlueFill
+        cell[0].border = ThinBorder
+        cell[0].font = BlackFont
+        cell[0].alignment = Al
+    for cell in ws['I2:I{}'.format(ws.max_row)]:
+        cell[0].border = ThinBorder
+        cell[0].font = BlackFont
+        cell[0].alignment = Al
+    for cell in ws['C2:C{}'.format(ws.max_row)]:
+        cell[0].border = ThinBorder
+        cell[0].font = BlackFont
+        cell[0].alignment = Al
+    for cell in ws['E2:E{}'.format(ws.max_row)]:
+        cell[0].border = ThinBorder
+        cell[0].font = BlackFont
+        cell[0].alignment = Al
+    for cell in ws['G2:G{}'.format(ws.max_row)]:
+        cell[0].border = ThinBorder
+        cell[0].font = BlackFont
+        cell[0].alignment = Al
+        
+    # Marking the POC with different cell colour and font colour
+    for row in range(1, ws.max_row + 1):
+        cell_header = ws.cell(row, 1)
+        if "POC" in cell_header.value:
+            cell_header.fill = BlackFill
+            cell_header.font = WhiteFont
+            cell_header = ws.cell(row, 2)
+            cell_header.fill = BlackFill
+            cell_header.font = WhiteFont 
+
+    # Setting the Column width
+    ws.column_dimensions['A'].width = 10
+    ws.column_dimensions['B'].width = 26           
+    ws.column_dimensions['C'].width = 12            
+    ws.column_dimensions['D'].width = 12            
+    ws.column_dimensions['E'].width = 12            
+    ws.column_dimensions['F'].width = 12            
+    ws.column_dimensions['G'].width = 12            
+    ws.column_dimensions['H'].width = 12            
+    ws.column_dimensions['I'].width = 12            
+    ws.column_dimensions['J'].width = 12
+
+def ExtractData(file):
     '''
         This code reads the Excel sheet and cleans or sorts out the data we require.
         After the sorting and filtering of the data it returns a list of Required Data data.
@@ -26,7 +134,9 @@ def ExtractData():
             Shift Letter specifying the shift of that engineer
             PH & PL
     '''
-    wb = load_workbook('July-21.xlsx', data_only = True)
+    # Asking for the file name to be read
+    
+    wb = load_workbook(file+'.xlsx', data_only = True)
     ws = wb.active
     sh = wb[ws.title]
     temp=[]
@@ -49,19 +159,24 @@ def roster(flag,temp):
         Returned Variable:
             A dictionary sorted based on the values of the dictionary, with Key as the engineer name & Value as their shift letter
     '''
-    week1={}
-    for i in temp[2:]:
-        shifts=list(set(i[flag:flag+5]))
-        if 'L' in shifts:
-            shifts.remove('L')
-        if len(shifts)==0 :
-            shifts=['Leave']
-        if shifts[0]==None:
-            shifts=['na']
-        week1[i[0]]=shifts[0]
-    return {k: v for k, v in sorted(week1.items(), key=lambda item: item[1])}
+    week=[]
+    if flag <= 27:
+        x=5
+    else:
+        x=32-flag
+    for ele in range(x):
+        week1={}
+        for i in temp[2:]:
+            shifts = i[flag+ele]
+            if shifts == 'L' :
+                shifts='Leave'
+            if shifts == None:
+                shifts='NA'
+            week1[i[0]] = shifts 
+        week.append({k: v for k, v in sorted(week1.items(), key=lambda item: item[1])})
+    return week
 
-def createExcel(week,flag):
+def createExcel(week,flag,fname):
     '''
         This code creates the Excel sheet as an output.
         
@@ -73,97 +188,46 @@ def createExcel(week,flag):
             A dictionary sorted based on the values of the dictionary, with Key as the engineer name & Value as their shift letter
     '''
     wb = Workbook()
-
-    ws = wb.active
-    ws.title=str(flag)
-
-    # Saving the Keys from the dictionary as a list to later use it to iterate through the dictionary
-    x=week.keys()
     
-    # Heading or the column title for the Sheet
-    ws.append(['Shift','Engineer Name','Case','Type','Case','Type','Case','Type','Case','Type'])
+    # Asking for POC details from the user
+    Val=input("Please enter the names of POCs followed by a ',' :")
+    POC=Val.split(",")
     
-    for i in x:
-        # Filling the cells with the values from the Dictionary
-        ws.append([week[i],i])
-
-    # Format the cell colour to be orange
-    redFill = PatternFill(start_color='FFFFC000',end_color='FFFFC000',fill_type='solid')
-    
-    # Format the cell colour to be blue 
-    blueFill = PatternFill(start_color='00B0F0',end_color='00B0F0',fill_type='solid')
-    
-    # Format the cell border
-    thin_border = Border(left=Side(style='thick'),right=Side(style='thick'),top=Side(style='thick'),bottom=Side(style='thick'))
-    
-    # Format the Font size type and appearance
-    font= Font(name='Cambria',size=11,bold=True,italic=True)
-    
-    # Format the text alignment in the cells
-    Al= Alignment(horizontal='center',vertical='center')
-    
-    # Apply the color formats to the cells
-    for col in range(1, ws.max_column + 1):
-        cell_header = ws.cell(1, col)
-        cell_header.fill = PatternFill(start_color='33CC33', end_color='33CC33', fill_type="solid")
-    for cell in ws['A2:A{}'.format(ws.max_row)]:
-        cell[0].fill = redFill
-    for cell in ws['B2:B{}'.format(ws.max_row)]:
-        cell[0].fill = redFill
-    for cell in ws['D2:D{}'.format(ws.max_row)]: 
-        cell[0].fill = blueFill
-    for cell in ws['F2:F{}'.format(ws.max_row)]: 
-        cell[0].fill = blueFill
-    for cell in ws['H2:H{}'.format(ws.max_row)]: 
-        cell[0].fill = blueFill
-    for cell in ws['J2:J{}'.format(ws.max_row)]:
-        cell[0].fill = blueFill
+    # Logic for days of the last week 
+    if flag <= 27:
+        x=5
+    else:
+        x=32-flag
         
-    # Apply the font , border and alignment
-    for col in ws.columns:
-        max_length = 0
-        column = col[0].column_letter # Get the column name
-        for cell in col:
-            cell.border = thin_border
-            cell.font = font
-            cell.alignment = Al
-            if cell.coordinate in ws.merged_cells: # not check merge_cells
-                continue
-            try: # Necessary to avoid error on empty cells
-                if len(str(cell.value)) > max_length:
-                    max_length = len(cell.value)
-            except:
-                pass
-        adjusted_width = (max_length + 2) * 1.2
-        ws.column_dimensions[column].width = 10  
+    # Looping the function call over the number of days
+    for i in range(x):
+        ws = wb.create_sheet(str(flag+i), i)
+        AddSheet(ws,week[i],POC)
         
-    # Save the file #FFC000  #33CC33
-    ws.column_dimensions['A'].width = 8
-    ws.column_dimensions['B'].width = 25  
-    
-    wb.copy_worksheet(ws).title=str(flag+1)
-    wb.copy_worksheet(ws).title=str(flag+2)
-    wb.copy_worksheet(ws).title=str(flag+3)
-    wb.copy_worksheet(ws).title=str(flag+4)
-    
-    wb.save('Output/Monday-'+str(flag)+'th'+'.xlsx')
+    d = time.strptime(fname, "%d %b %Y")  
+    weekNumber = datetime.date(d.tm_year,d.tm_mon,d.tm_mday).strftime("%V")
+    # Saving the output in the predefined folder
+    wb.save('Output/Week-'+weekNumber+'.xlsx')
     
 if __name__ == "__main__":
-    val=ExtractData()
+    warnings.simplefilter("ignore")
+    print("*Note: entered file name should be in the month-year format eg. August-2021")
+    file = input("Enter the file name to read (without extension):")
+    val = ExtractData(file)
+    c = file.split("-")
     temp=[]
     for i in val:
         temp.append(i[1:33])
-    
+        
     for i in range(len(temp[0])):
         if temp[0][i]=='Mon':
             flag=i
             break
-    # print(flag)
     
-    # Loop the call to create the excel sheet for all the mondays
-    while flag<32:            
+    while flag<32:
+        fname = str(flag)+" "+c[0][:3]+" "+c[1]
         week1=roster(flag,temp)
-        createExcel(week1,flag)
+        createExcel(week1,flag,fname)
         flag+=7
         
 """
