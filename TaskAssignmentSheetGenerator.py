@@ -6,15 +6,23 @@ from openpyxl.utils import get_column_letter
 import warnings
 import datetime
 import time
+import os
+import sys
+import logging
+from logging.handlers import RotatingFileHandler
 
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
+    
 def AddSheet(ws,week,POC):
     # Filling the Header with the values
     ws.append(['Shift','Engineer Name','Case','Type','Case','Type','Case','Type','Case','Type'])
     x=week.keys()
-
+    code = 0
     for i in x:
         # Filling the cells with the values from the Dictionary and checking for POCs
         if i in POC:
+            code+=1
             ws.append(["POC : "+week[i],i])
         else:
             ws.append([week[i],i])
@@ -111,6 +119,7 @@ def AddSheet(ws,week,POC):
     ws.column_dimensions['H'].width = 12            
     ws.column_dimensions['I'].width = 12            
     ws.column_dimensions['J'].width = 12
+    return code
 
 def ExtractData(file):
     '''
@@ -135,8 +144,12 @@ def ExtractData(file):
             PH & PL
     '''
     # Asking for the file name to be read
-    
-    wb = load_workbook(file+'.xlsx', data_only = True)
+    try:
+        wb = load_workbook(file+'.xlsx', data_only = True)
+        logging.info("Successfully opened the excel file")
+    except:
+        logging.error("Unable to open the excel file!!.. Please check if the file is opened by another program already. If so, please close and retry!")
+        print("Please check if the file is opened by another program already")
     ws = wb.active
     sh = wb[ws.title]
     temp=[]
@@ -144,6 +157,7 @@ def ExtractData(file):
         tempr=[]
         for cell in row:
             if cell.value=='A - (6:00 AM - 3:00 PM)':
+                logging.info("Successfully extracted data from the file")
                 return temp[1:-1]
             tempr.append(cell.value)
         temp.append(tempr)
@@ -200,19 +214,41 @@ def createExcel(week,flag,fname):
         x=32-flag
         
     # Looping the function call over the number of days
+    code = []
     for i in range(x):
         ws = wb.create_sheet(str(flag+i), i)
-        AddSheet(ws,week[i],POC)
-        
+        code.append(AddSheet(ws,week[i],POC))
     d = time.strptime(fname, "%d %b %Y")  
     weekNumber = datetime.date(d.tm_year,d.tm_mon,d.tm_mday).strftime("%V")
+    if min(code)<4:
+        logging.warning(str(min(code))+" POCs were found!... please check if their names were mis-spelled :"+" ".join(POC)+" week"+weekNumber)
     # Saving the output in the predefined folder
+    logging.info("Successfully Identified the Date on Monday for week"+weekNumber+" Date: "+str(flag)+" "+c[0][:3]+" "+c[1])
     wb.save('Output/Week-'+weekNumber+'.xlsx')
     
 if __name__ == "__main__":
+    fmtstr = "%(asctime)s | %(levelname)s | Line:%(lineno)s | %(funcName)s : %(message)s"
+    datestr = "%d-%m-%Y %I:%M:%S %p"
+    # lognm = 'Logs\\'    
+    # logging.basicConfig(filename = 'Logs\output.log',level = logging.DEBUG,filemode = "w",format = fmtstr,datefmt = datestr)    
+    # maxBytes=1000 means 1kb
+    logging.basicConfig(handlers=[RotatingFileHandler('Logs\output.log', maxBytes=1000000, backupCount=10)],level = logging.DEBUG,format = fmtstr,datefmt = datestr)
     warnings.simplefilter("ignore")
-    print("*Note: entered file name should be in the month-year format eg. August-2021")
+    print("*Note: entered file name should be in the month-year format eg. August-2021\n")
     file = input("Enter the file name to read (without extension):")
+    tries = 1
+    while not os.path.isfile(file+'.xlsx') and tries <5:          
+        logging.warning("Unable to locate the entered file in the current directory!!... The file "+file+'.xlsx '+"NOT Found")        
+        cls()
+        print("*Error: entered file name should be in the month-year format eg. August-2021 \nand should exist in the same path as the .exe file!...\n")
+        file = input("Please Enter the file name to read again (without extension):")
+        tries += 1
+        if tries == 5:
+            logging.error("Unable to locate the entered file in the current directory!!... The file "+file+'.xlsx '+"NOT Found")
+            cls()
+            print("You've exhausted your 5 retry counts!!... was unable to find a file named : "+file+".xlsx")
+            exi=input("\n Press any key to exit...  ")
+            sys.exit()
     val = ExtractData(file)
     c = file.split("-")
     temp=[]
@@ -223,12 +259,24 @@ if __name__ == "__main__":
         if temp[0][i]=='Mon':
             flag=i
             break
-    
     while flag<32:
         fname = str(flag)+" "+c[0][:3]+" "+c[1]
         week1=roster(flag,temp)
         createExcel(week1,flag,fname)
         flag+=7
+     
+    cls()
+    print("""    
+    
+Please collect your files from the output folder.
+Thank you for using this code.
+This code was built by Naman Gupta.
+Please feel free to leave a comment, grievance or suggestion on: guptanaman0555@gmail.com
+Do follow me on GitHub at: https://github.com/GuptaNaman1998
+           
+    """)
+    exi=input("Press any key to exit...  ")
+    
         
 """
 Exceptions/Lowlights:
