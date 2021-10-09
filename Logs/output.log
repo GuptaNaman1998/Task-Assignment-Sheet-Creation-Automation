@@ -1,0 +1,30 @@
+27-09-2021 04:58:04 PM | INFO | Line:122 | ExtractData : Successfully opened the excel file
+27-09-2021 04:58:04 PM | INFO | Line:130 | ExtractData : Successfully extracted data from the file
+27-09-2021 04:58:04 PM | INFO | Line:170 | createExcel : Successfully Identified the Date on Monday for week31 Date: 2 Aug 2021.xlsx
+27-09-2021 04:58:04 PM | INFO | Line:173 | createExcel : Successfully saved the excel file
+27-09-2021 04:58:04 PM | INFO | Line:170 | createExcel : Successfully Identified the Date on Monday for week32 Date: 9 Aug 2021.xlsx
+27-09-2021 04:58:04 PM | INFO | Line:173 | createExcel : Successfully saved the excel file
+27-09-2021 04:58:04 PM | INFO | Line:170 | createExcel : Successfully Identified the Date on Monday for week33 Date: 16 Aug 2021.xlsx
+27-09-2021 04:58:04 PM | INFO | Line:173 | createExcel : Successfully saved the excel file
+27-09-2021 04:58:04 PM | INFO | Line:170 | createExcel : Successfully Identified the Date on Monday for week34 Date: 23 Aug 2021.xlsx
+27-09-2021 04:58:04 PM | INFO | Line:173 | createExcel : Successfully saved the excel file
+27-09-2021 04:58:04 PM | INFO | Line:170 | createExcel : Successfully Identified the Date on Monday for week35 Date: 30 Aug 2021.xlsx
+27-09-2021 04:58:04 PM | INFO | Line:173 | createExcel : Successfully saved the excel file
+10-10-2021 01:37:37 AM | INFO | Line:122 | ExtractData : Successfully opened the excel file
+10-10-2021 01:37:37 AM | INFO | Line:130 | ExtractData : Successfully extracted data from the file
+10-10-2021 01:37:44 AM | INFO | Line:122 | ExtractData : Successfully opened the excel file
+10-10-2021 01:37:44 AM | INFO | Line:130 | ExtractData : Successfully extracted data from the file
+10-10-2021 01:38:27 AM | INFO | Line:122 | ExtractData : Successfully opened the excel file
+10-10-2021 01:38:27 AM | INFO | Line:130 | ExtractData : Successfully extracted data from the file
+10-10-2021 01:38:27 AM | WARNING | Line:169 | createExcel : 0 POCs were found!... please check if their names were mis-spelled : week27
+10-10-2021 01:38:27 AM | INFO | Line:170 | createExcel : Successfully Identified the Date on Monday for week27 Date: 5 Jul 2021.xlsx
+10-10-2021 01:38:27 AM | INFO | Line:173 | createExcel : Successfully saved the excel file
+10-10-2021 01:38:27 AM | WARNING | Line:169 | createExcel : 0 POCs were found!... please check if their names were mis-spelled : week28
+10-10-2021 01:38:27 AM | INFO | Line:170 | createExcel : Successfully Identified the Date on Monday for week28 Date: 12 Jul 2021.xlsx
+10-10-2021 01:38:27 AM | INFO | Line:173 | createExcel : Successfully saved the excel file
+10-10-2021 01:38:27 AM | WARNING | Line:169 | createExcel : 0 POCs were found!... please check if their names were mis-spelled : week29
+10-10-2021 01:38:27 AM | INFO | Line:170 | createExcel : Successfully Identified the Date on Monday for week29 Date: 19 Jul 2021.xlsx
+10-10-2021 01:38:27 AM | INFO | Line:173 | createExcel : Successfully saved the excel file
+10-10-2021 01:38:27 AM | WARNING | Line:169 | createExcel : 0 POCs were found!... please check if their names were mis-spelled : week30
+10-10-2021 01:38:27 AM | INFO | Line:170 | createExcel : Successfully Identified the Date on Monday for week30 Date: 26 Jul 2021.xlsx
+10-10-2021 01:38:27 AM | INFO | Line:173 | createExcel : Successfully saved the excel file
